@@ -1,12 +1,9 @@
 import { X } from "lucide-react";
 import Swal from "sweetalert2";
 import { useAppStore } from "../../store/useAppStore";
-
 const MovieModal = ({ movie, onClose, hideActions }) => {
   const { rentMovie, addToMyList, user } = useAppStore();
-
   if (!movie) return null;
-
   const handleRent = async () => {
     const success = await rentMovie(movie);
     if (success) {
@@ -32,7 +29,6 @@ const MovieModal = ({ movie, onClose, hideActions }) => {
       });
     }
   };
-
   const handleAddToList = () => {
     const success = addToMyList(movie);
     if (success) {
@@ -58,20 +54,15 @@ const MovieModal = ({ movie, onClose, hideActions }) => {
       });
     }
   };
-
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-[#111827] text-white w-full max-w-4xl h-auto md:h-[550px] rounded-2xl shadow-2xl overflow-hidden relative animate-fade-in flex flex-col md:flex-row">
-        
-        {/* Close Button */}
         <button 
           onClick={onClose} 
           className="absolute top-4 right-4 z-20 bg-black/50 text-gray-300 hover:text-white hover:bg-black/80 transition p-2 rounded-full"
         >
           <X size={24} />
         </button>
-
-        {/* Image Section */}
         <div className="md:w-5/12 relative h-64 md:h-full shrink-0">
           <img 
             src={movie.image_url || movie.image} 
@@ -80,11 +71,8 @@ const MovieModal = ({ movie, onClose, hideActions }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-[#111827]/80 md:to-[#111827]"></div>
         </div>
-
-        {/* Content Section */}
         <div className="md:w-7/12 p-8 flex flex-col justify-center">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-md">{movie.title}</h2>
-          
           <div className="flex flex-col gap-3 text-sm text-gray-300 mb-6 bg-[#1f2937]/50 p-4 rounded-xl border border-gray-700/50">
             <div className="flex items-center gap-2">
               <span className="text-gray-500 font-bold uppercase tracking-wider text-xs w-24">Categoría:</span>
@@ -92,18 +80,15 @@ const MovieModal = ({ movie, onClose, hideActions }) => {
                 {movie.category || "General"}
               </span>
             </div>
-            
             <div className="flex items-center gap-2">
               <span className="text-gray-500 font-bold uppercase tracking-wider text-xs w-24">Calificación:</span>
               <div className="flex items-center gap-1 text-yellow-500 font-bold bg-yellow-900/20 px-3 py-1 rounded-full border border-yellow-700/30">
-                {/* SVG Estrella estática para diseño */}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                   <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
                 </svg>
                 <span>{(movie.rating || 0).toString().substring(0, 3)} / 10</span>
               </div>
             </div>
-
             <div className="flex items-center gap-2">
               <span className="text-gray-500 font-bold uppercase tracking-wider text-xs w-24">Precio:</span>
               <span className="text-green-400 font-mono font-bold bg-green-900/20 px-3 py-1 rounded-full border border-green-700/30">
@@ -111,12 +96,9 @@ const MovieModal = ({ movie, onClose, hideActions }) => {
               </span>
             </div>
           </div>
-
           <p className="text-gray-300 mb-8 leading-relaxed line-clamp-4 text-sm md:text-base border-l-2 border-red-600 pl-4 italic">
             "{movie.description || "Sin descripción disponible para este título."}"
           </p>
-
-          {/* Action Buttons */}
           {!hideActions && (
             user?.role !== 'admin' ? (
               <div className="flex flex-col sm:flex-row gap-4 mt-auto">
@@ -151,10 +133,8 @@ const MovieModal = ({ movie, onClose, hideActions }) => {
             )
           )}
         </div>
-
       </div>
     </div>
   );
 };
-
 export default MovieModal;

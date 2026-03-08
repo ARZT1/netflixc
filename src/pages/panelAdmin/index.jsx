@@ -2,14 +2,11 @@ import { useState, useEffect } from "react";
 import Navbar from "../../components/layout/Navbar";
 import RentalDetailsModal from "../../components/panelAdmin/RentalDetailsModal";
 import { Eye } from "lucide-react";
-
 const API_URL = "https://f3b22fa3c34192b3.mokky.dev";
-
 const AdminPanel = () => {
   const [interactions, setInteractions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedRental, setSelectedRental] = useState(null);
-
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
@@ -18,20 +15,15 @@ const AdminPanel = () => {
           fetch(`${API_URL}/users`),
           fetch(`${API_URL}/movies`)
         ]);
-
         const rentalsData = await rentalsRes.json();
         let usersData = await usersRes.json();
         const moviesData = await moviesRes.json();
-
-        // Mokky users endpoint might return nested array: [[{user}]]
         if (Array.isArray(usersData) && usersData.length > 0 && Array.isArray(usersData[0])) {
           usersData = usersData[0];
         }
-
         const mappedData = rentalsData.map(rental => {
           const matchedUser = usersData.find(u => u.id === rental.user_id) || {};
           const matchedMovie = moviesData.find(m => m.id === rental.movie_id) || {};
-
           return {
             id: rental.id,
             user_name: matchedUser.name || `User ID: ${rental.user_id}`,
@@ -39,14 +31,10 @@ const AdminPanel = () => {
             movie_title: rental.movie_title || matchedMovie.title,
             movie_image: matchedMovie.image_url || matchedMovie.image || "https://image.tmdb.org/t/p/w200/51tqzRtKMMZEYUpSYfkZZ8d6xGC.jpg",
             price: rental.price,
-            date: new Date().toLocaleDateString() // Fecha simulada del cliente local
+            date: new Date().toLocaleDateString()
           };
         });
-
-        // Filtramos para que solo exista el estado RENTADA como lo pidió el usuario
         const filteredData = mappedData.filter(d => (d.action || '').toUpperCase() === 'RENTED');
-
-        // Ordenamos simulando mostrar las más recientes primero asumiendo IDs incrementales
         const sortedData = filteredData.sort((a, b) => b.id - a.id);
         setInteractions(sortedData);
       } catch (error) {
@@ -55,25 +43,20 @@ const AdminPanel = () => {
         setIsLoading(false);
       }
     };
-
     fetchAdminData();
   }, []);
-
   if (isLoading) {
     return <div className="min-h-screen bg-[#0b0f14] text-white flex items-center justify-center">Obteniendo registros...</div>;
   }
-
   return (
     <div className="min-h-screen bg-[#0b0f14] text-white p-8">
       <Navbar />
-
       <div className="flex justify-between items-end mb-6">
         <div>
           <h2 className="text-3xl font-bold border-l-4 border-red-600 pl-3">Dashboard Administrador</h2>
           <p className="text-gray-400 mt-2 ml-4">Historial maestro de rentas y cancelaciones del sistema.</p>
         </div>
       </div>
-
       <div className="overflow-x-auto bg-[#111827] rounded-xl border border-gray-800 shadow-2xl">
         <table className="w-full text-left text-sm text-gray-400">
           <thead className="text-xs text-gray-300 uppercase bg-gray-900 border-b border-gray-800">
@@ -127,8 +110,6 @@ const AdminPanel = () => {
           </tbody>
         </table>
       </div>
-
-      {/* Render Modal */}
       {selectedRental && (
         <RentalDetailsModal 
           interaction={selectedRental}
@@ -138,6 +119,4 @@ const AdminPanel = () => {
     </div>
   );
 };
-
 export default AdminPanel;
-

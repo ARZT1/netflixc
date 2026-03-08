@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react";
 import { X, Film } from "lucide-react";
 import { useAppStore } from "../../store/useAppStore";
-
 const AdminUserDetailsModal = ({ selectedUser, onClose }) => {
   const [userHistory, setUserHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const fetchUserHistory = async () => {
       if (!selectedUser) return;
       try {
         const API_URL = "https://f3b22fa3c34192b3.mokky.dev";
         const [rentalsRes, moviesRes] = await Promise.all([
-          fetch(`${API_URL}/rentals?user_id=${selectedUser.id}`), // Mokky filtering
+          fetch(`${API_URL}/rentals?user_id=${selectedUser.id}`),
           fetch(`${API_URL}/movies`)
         ]);
-
         const rentalsData = await rentalsRes.json();
         const moviesData = await moviesRes.json();
-
         const enrichedHistory = rentalsData
           .filter(r => (r.status || '').toUpperCase() === 'RENTED')
           .map(rental => {
@@ -27,8 +23,7 @@ const AdminUserDetailsModal = ({ selectedUser, onClose }) => {
               ...rental,
               image_url: matchedMovie.image_url || matchedMovie.image || "https://image.tmdb.org/t/p/w200/51tqzRtKMMZEYUpSYfkZZ8d6xGC.jpg"
             };
-          }).sort((a, b) => b.id - a.id); // Newest first
-
+          }).sort((a, b) => b.id - a.id);
         setUserHistory(enrichedHistory);
       } catch (error) {
         console.error("Error fetching user history:", error);
@@ -36,17 +31,12 @@ const AdminUserDetailsModal = ({ selectedUser, onClose }) => {
         setIsLoading(false);
       }
     };
-
     fetchUserHistory();
   }, [selectedUser]);
-
   if (!selectedUser) return null;
-
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
       <div className="bg-[#111827] text-white w-full max-w-4xl h-[85vh] rounded-2xl shadow-2xl border border-gray-800 relative flex flex-col overflow-hidden">
-        
-        {/* Header */}
         <div className="p-6 border-b border-gray-800 flex items-center justify-between bg-gray-900/50 shrink-0">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-xl font-bold shadow-lg">
@@ -57,7 +47,6 @@ const AdminUserDetailsModal = ({ selectedUser, onClose }) => {
               <p className="text-sm text-gray-400">{selectedUser.email}</p>
             </div>
           </div>
-
           <button 
             onClick={onClose} 
             className="text-gray-400 hover:text-white transition bg-gray-800 hover:bg-red-600 p-2 rounded-full"
@@ -65,13 +54,10 @@ const AdminUserDetailsModal = ({ selectedUser, onClose }) => {
             <X size={20} />
           </button>
         </div>
-
-        {/* Content - Scrollable History */}
         <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
           <h3 className="text-lg font-bold mb-6 flex items-center gap-2 text-gray-300">
             <Film size={20} className="text-red-500" /> Historial de Transacciones
           </h3>
-
           {isLoading ? (
              <div className="text-center py-10 text-gray-500">Cargando historial del cliente...</div>
           ) : userHistory.length === 0 ? (
@@ -113,5 +99,4 @@ const AdminUserDetailsModal = ({ selectedUser, onClose }) => {
     </div>
   );
 };
-
 export default AdminUserDetailsModal;

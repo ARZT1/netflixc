@@ -1,10 +1,7 @@
 import { createContext, useContext, useState } from "react";
-
 const AuthContext = createContext();
-
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
   const login = (correo) => {
     setUser({
       email: correo,
@@ -14,7 +11,6 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
   };
-
   return (
     <AuthContext.Provider
       value={{
@@ -27,10 +23,8 @@ const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
 export const useAuth = () => {
   const context = useContext(AuthContext);
-
   if (!context) {
     console.log("useAuth debs er usado dentro de un provider");
   }

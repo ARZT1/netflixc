@@ -6,7 +6,6 @@ import AdminUserDetailsModal from "../../components/panelAdmin/AdminUserDetailsM
 import MovieModal from "../../components/Dashboard/MovieModal";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
 const Profile = () => {
   const { user, users, rentedMovies, myList, fetchRentedMovies, removeFromMyList, cancelRental, hasRole, fetchUsers } = useAppStore();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -14,9 +13,7 @@ const Profile = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const navigate = useNavigate();
   const { id } = useParams();
-
   const isAdmin = hasRole('admin');
-
   useEffect(() => {
     if (isAdmin) {
       fetchUsers();
@@ -24,7 +21,6 @@ const Profile = () => {
       fetchRentedMovies();
     }
   }, [isAdmin, fetchUsers, fetchRentedMovies]);
-
   useEffect(() => {
     if (id && rentedMovies?.length > 0) {
       const movie = rentedMovies.find((m) => m.movie_id?.toString() === id || m.id?.toString() === id);
@@ -33,7 +29,6 @@ const Profile = () => {
       setSelectedMovie(null);
     }
   }, [id, rentedMovies]);
-
   const handleCancelRental = async (rentalId, title) => {
     const result = await Swal.fire({
       title: '¿Cancelar Renta?',
@@ -47,7 +42,6 @@ const Profile = () => {
       confirmButtonColor: "#e50914",
       cancelButtonColor: "#374151"
     });
-
     if (result.isConfirmed) {
       const success = await cancelRental(rentalId);
       if (success) {
@@ -60,12 +54,9 @@ const Profile = () => {
       }
     }
   };
-
   return (
     <div className="min-h-screen bg-[#0b0f14] text-white p-8">
       <Navbar />
-
-      {/* User Header Info */}
       <div className="bg-[#111827] rounded-xl p-6 md:p-8 mb-12 flex flex-col md:flex-row items-center gap-6 border border-gray-800 shadow-xl">
         <div className="w-24 h-24 md:w-32 md:h-32 bg-red-600 rounded-full flex items-center justify-center text-4xl md:text-5xl font-bold border-4 border-[#0b0f14] shadow-lg shrink-0">
           {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
@@ -89,17 +80,12 @@ const Profile = () => {
           </button>
         </div>
       </div>
-
       {isAdmin ? (
-        // ==========================
-        // VISTA PARA ADMINISTRADOR
-        // ==========================
         <div>
           <div className="flex items-center gap-3 mb-6 border-l-4 border-red-600 pl-3">
             <h2 className="text-2xl font-bold">Usuarios Registrados ({users?.length || 0})</h2>
             <span className="bg-yellow-500/20 text-yellow-500 px-2 py-1 rounded text-xs font-bold border border-yellow-500/30">Admin View</span>
           </div>
-
           {!users || users.length === 0 ? (
             <div className="bg-[#111827]/50 border border-gray-800 rounded-lg p-10 text-center">
               <p className="text-gray-400 text-lg">Cargando usuarios desde la base de datos...</p>
@@ -126,19 +112,14 @@ const Profile = () => {
               ))}
             </div>
           )}
-
           {selectedAdminUser && (
             <AdminUserDetailsModal
               selectedUser={selectedAdminUser}
               onClose={() => setSelectedAdminUser(null)}
             />
           )}
-
         </div>
       ) : (
-        // ==========================
-        // VISTA PARA CLIENTES
-        // ==========================
         <>
           <div className="mb-16">
             <h2 className="text-2xl font-bold mb-6 border-l-4 border-red-600 pl-3">Películas Rentadas ({rentedMovies?.length || 0})</h2>
@@ -156,8 +137,6 @@ const Profile = () => {
                   >
                     <div className="relative aspect-[2/3] w-full">
                       <img src={movie.image_url || movie.image} alt={movie.title} className="w-full h-full object-cover" />
-
-                      {/* Dynamic Status Badge */}
                       <div className={`absolute top-2 right-2 text-white text-xs font-bold px-2 py-1 rounded shadow-md ${movie.status === 'RENTED' ? 'bg-blue-600' :
                           (movie.status === 'COMPLETED' || movie.status === 'CANCELLED' || movie.status === 'RETURNED') ? 'bg-gray-600' :
                             'bg-red-800'
@@ -165,30 +144,25 @@ const Profile = () => {
                         {movie.status === 'RENTED' ? 'Rentada' :
                           (movie.status === 'COMPLETED' || movie.status === 'CANCELLED' || movie.status === 'RETURNED') ? 'Completado' : movie.status}
                       </div>
-
                     </div>
                     <div className="p-4 flex-1 flex flex-col justify-between opacity-0 group-hover:opacity-100 absolute inset-0 bg-black/90 transition-opacity">
                       <h4 className="font-bold text-sm text-center mb-2 line-clamp-2 mt-4">{movie.title}</h4>
-
                       {movie.status === 'RENTED' && (
                         <div className="w-full bg-blue-600/20 text-blue-400 py-2 text-xs font-bold rounded mt-auto text-center uppercase tracking-wider cursor-default pointer-events-none">
                           Rentada
                         </div>
                       )}
-
                       {(movie.status === 'COMPLETED' || movie.status === 'CANCELLED' || movie.status === 'RETURNED') && (
                         <div className="w-full bg-gray-800/80 text-gray-400 py-2 text-xs font-bold rounded mt-auto text-center uppercase tracking-wider cursor-not-allowed pointer-events-none">
                           Completado
                         </div>
                       )}
-
                     </div>
                   </div>
                 ))}
               </div>
             )}
           </div>
-
           <div>
             <h2 className="text-2xl font-bold mb-6 border-l-4 border-red-600 pl-3">Mi Lista ({myList?.length || 0})</h2>
             {!myList || myList.length === 0 ? (
@@ -218,12 +192,9 @@ const Profile = () => {
           </div>
         </>
       )}
-
       {isEditModalOpen && <EditProfileModal onClose={() => setIsEditModalOpen(false)} />}
       {selectedMovie && <MovieModal movie={selectedMovie} hideActions={true} onClose={() => navigate("/profile")} />}
     </div>
   );
 };
-
 export default Profile;
-
