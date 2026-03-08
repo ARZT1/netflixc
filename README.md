@@ -6,3 +6,6 @@ Este proyecto consiste en una plataforma web de alquiler de películas inspirada
 La aplicación proporciona una experiencia de usuario fluida e intuitiva, permitiendo que los clientes interactúen fácilmente con el catálogo de películas, mientras que los administradores cuentan con herramientas para supervisar y gestionar los alquileres activos dentro del sistema.
 
 El proyecto demuestra la implementación de una arquitectura frontend moderna, manejo de rutas protegidas, gestión de estado global y diseño de interfaces responsivas.
+
+Backend
+https://mokky.dev/projects/f3b22fa3c34192b3
