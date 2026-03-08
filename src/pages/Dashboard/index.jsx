@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { useAppStore } from "../../store/useAppStore";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/layout/Navbar";
 import MovieModal from "../../components/Dashboard/MovieModal";
 
@@ -9,10 +10,21 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     fetchCatalog();
   }, [fetchCatalog]);
+
+  useEffect(() => {
+    if (id && catalog.length > 0) {
+      const movie = catalog.find((m) => m.id.toString() === id);
+      setSelectedMovie(movie || null);
+    } else {
+      setSelectedMovie(null);
+    }
+  }, [id, catalog]);
 
   if (isLoading) {
     return <div className="min-h-screen bg-[#0b0f14] text-white flex items-center justify-center">Cargando catálogo...</div>;
@@ -75,7 +87,7 @@ const Dashboard = () => {
           {filteredCatalog.map(movie => (
             <div 
               key={movie.id} 
-              onClick={() => setSelectedMovie(movie)}
+              onClick={() => navigate(`/dashboard/movie/${movie.id}`)}
               className="bg-[#111827] rounded-lg overflow-hidden cursor-pointer group relative transition hover:scale-105 duration-300 ring-1 ring-gray-800 hover:ring-gray-600 flex flex-col"
             >
               <img src={movie.image_url || movie.image} alt={movie.title} className="w-full aspect-[2/3] object-cover rounded-t-lg" />
@@ -100,7 +112,7 @@ const Dashboard = () => {
                 {categoryMovies.map(movie => (
                   <div 
                     key={movie.id} 
-                    onClick={() => setSelectedMovie(movie)}
+                    onClick={() => navigate(`/dashboard/movie/${movie.id}`)}
                     className="min-w-[150px] w-[150px] md:min-w-[180px] md:w-[180px] bg-[#111827] rounded-lg overflow-hidden cursor-pointer group relative transition hover:scale-105 duration-300 ring-1 ring-gray-800 hover:ring-gray-600"
                   >
                     <img src={movie.image_url || movie.image} alt={movie.title} className="w-full aspect-[2/3] object-cover" />
@@ -119,7 +131,7 @@ const Dashboard = () => {
       {selectedMovie && (
         <MovieModal 
           movie={selectedMovie} 
-          onClose={() => setSelectedMovie(null)} 
+          onClose={() => navigate("/dashboard")} 
         />
       )}
     </div>

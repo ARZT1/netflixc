@@ -4,6 +4,7 @@ import Navbar from "../../components/layout/Navbar";
 import EditProfileModal from "../../components/Profile/EditProfileModal";
 import AdminUserDetailsModal from "../../components/panelAdmin/AdminUserDetailsModal";
 import MovieModal from "../../components/Dashboard/MovieModal";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Profile = () => {
@@ -11,6 +12,8 @@ const Profile = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedAdminUser, setSelectedAdminUser] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const isAdmin = hasRole('admin');
 
@@ -21,6 +24,15 @@ const Profile = () => {
       fetchRentedMovies();
     }
   }, [isAdmin, fetchUsers, fetchRentedMovies]);
+
+  useEffect(() => {
+    if (id && rentedMovies?.length > 0) {
+      const movie = rentedMovies.find((m) => m.movie_id?.toString() === id || m.id?.toString() === id);
+      setSelectedMovie(movie || null);
+    } else {
+      setSelectedMovie(null);
+    }
+  }, [id, rentedMovies]);
 
   const handleCancelRental = async (rentalId, title) => {
     const result = await Swal.fire({
@@ -139,7 +151,7 @@ const Profile = () => {
                 {rentedMovies.map((movie) => (
                   <div 
                     key={movie.rental_id} 
-                    onClick={() => setSelectedMovie(movie)}
+                    onClick={() => navigate(`/profile/movie/${movie.id || movie.movie_id}`)}
                     className="cursor-pointer bg-[#111827] rounded-xl overflow-hidden relative group transition hover:scale-105 duration-300 ring-1 ring-gray-800 hover:ring-gray-600 flex flex-col h-full shadow-lg"
                   >
                     <div className="relative aspect-[2/3] w-full">
@@ -208,7 +220,7 @@ const Profile = () => {
       )}
 
       {isEditModalOpen && <EditProfileModal onClose={() => setIsEditModalOpen(false)} />}
-      {selectedMovie && <MovieModal movie={selectedMovie} hideActions={true} onClose={() => setSelectedMovie(null)} />}
+      {selectedMovie && <MovieModal movie={selectedMovie} hideActions={true} onClose={() => navigate("/profile")} />}
     </div>
   );
 };

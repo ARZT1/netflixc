@@ -24,9 +24,17 @@ const AppRouter = () => {
         path="/dashboard" 
         element={user === null ? <Navigate to="/" /> : <Dashboard />} 
       />
+      <Route 
+        path="/dashboard/movie/:id" 
+        element={user === null ? <Navigate to="/" /> : <Dashboard />} 
+      />
       
       <Route 
         path="/profile" 
+        element={user === null ? <Navigate to="/" /> : <Profile />} 
+      />
+      <Route 
+        path="/profile/movie/:id" 
         element={user === null ? <Navigate to="/" /> : <Profile />} 
       />
       
